@@ -3,6 +3,8 @@ const kafka = require('kafka-node'),
 
 require('dotenv').config();
 
+console.log(`kafka server addr: ${process.env.KAFKA_HOST}`);
+
 const kafkaHost = process.env.KAFKA_HOST;
 
 const client = new kafka.KafkaClient({kafkaHost});
@@ -21,12 +23,16 @@ const send = ()=> {
 
   let payloads = [{
     topic: 'test',
-    messages: message, // multi messages should be a array, single message can be just a string or a KeyedMessage instance
-    timestamp: Date.now() // <-- defaults to Date.now() (only available with kafka v0.10+)
+    messages: message,
+    timestamp: Date.now()
   }] 
   console.log("Sending...")
-  producer.send(payloads, ()=> {
-    console.log(message)
+  producer.send(payloads, (e)=> {
+    if(e) {
+      console.log(e)
+    } else {
+      console.log(message);
+    }
   })
 }
 
